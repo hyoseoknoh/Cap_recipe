@@ -6,7 +6,8 @@ export default function RecipeDetail({ route }) {
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const BACKEND_URL = 'http://172.16.1.9:8080'; // 백엔드 URL
+    const BACKEND_URL = 'http://172.16.1.9:8080'; // 서버 IP를 수정하세요
+
 
     useEffect(() => {
         const fetchRecipeDetail = async () => {
