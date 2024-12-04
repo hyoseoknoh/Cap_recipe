@@ -1,145 +1,78 @@
-// import React from 'react';
-// import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';
+// 
 
-// export default function NoticeBoard({ route }) {
-//     const navigation = useNavigation();
-//     const { filteredRecipes } = route.params || {}; // 검색 결과를 props로 받음
 
-//     return (
-//         <View style={styles.container}>
-//             <Text style={styles.headerText}>검색 결과</Text>
-//             {filteredRecipes && filteredRecipes.length > 0 ? (
-//                 <ScrollView contentContainerStyle={styles.contentContainer}>
-//                     {filteredRecipes.map((recipe, index) => (
-//                         <View key={index} style={styles.card}>
-//                             <Image
-//                                 source={{ uri: recipe.mainImage }}
-//                                 style={styles.recipeImage}
-//                             />
-//                             <Text style={styles.recipeTitle}>{recipe.Name}</Text>
-//                             <TouchableOpacity
-//                                 onPress={() =>
-//                                     navigation.navigate('RecipeDetail', { id: recipe.id })
-//                                 }
-//                             >
-//                                 <Text style={styles.recipeLink}>상세 보기</Text>
-//                             </TouchableOpacity>
-//                         </View>
-//                     ))}
-//                 </ScrollView>
-//             ) : (
-//                 <View style={styles.noResultContainer}>
-//                     <Text style={styles.noResultText}>검색 결과가 없습니다.</Text>
-//                 </View>
-//             )}
-//         </View>
-//     );
-// }
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         backgroundColor: '#fff',
-//         padding: 10,
-//     },
-//     headerText: {
-//         fontSize: 18,
-//         fontWeight: 'bold',
-//         marginBottom: 10,
-//         textAlign: 'center',
-//     },
-//     contentContainer: {
-//         flexDirection: 'row',
-//         flexWrap: 'wrap',
-//         justifyContent: 'space-between',
-//     },
-//     card: {
-//         width: '47%',
-//         marginBottom: 15,
-//         backgroundColor: '#f9f9f9',
-//         borderRadius: 10,
-//         alignItems: 'center',
-//         padding: 10,
-//         shadowColor: '#000',
-//         shadowOffset: { width: 0, height: 2 },
-//         shadowOpacity: 0.1,
-//         shadowRadius: 4,
-//         elevation: 2,
-//     },
-//     recipeImage: {
-//         width: '100%',
-//         height: 120,
-//         borderRadius: 10,
-//     },
-//     recipeTitle: {
-//         fontWeight: 'bold',
-//         fontSize: 14,
-//         marginVertical: 5,
-//         textAlign: 'center',
-//     },
-//     recipeLink: {
-//         color: '#007BFF',
-//         textAlign: 'center',
-//         fontWeight: 'bold',
-//     },
-//     noResultContainer: {
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//     },
-//     noResultText: {
-//         fontSize: 16,
-//         color: '#888',
-//     },
-// });
-
-import React from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function NoticeBoard({ route }) {
     const navigation = useNavigation();
-    const { filteredRecipes = [] } = route.params || {}; // 기본값 설정
+    const [recipes, setRecipes] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const BACKEND_URL = 'http://172.30.1.27:8080'; // 서버 IP
+    const { query = '' } = route.params || {}; // 검색어 가져오기
 
-    // 데이터 유효성 검사
-    if (!Array.isArray(filteredRecipes)) {
-        return (
-            <View style={styles.noResultContainer}>
-                <Text style={styles.noResultText}>잘못된 데이터 형식입니다.</Text>
-            </View>
-        );
-    }
+    const fetchRecipes = async () => {
+        if (loading || !hasMore) return; // 이미 로딩 중이거나 더 이상 데이터가 없으면 실행 중단
+        setLoading(true);
+
+        try {
+            const response = await fetch(`${BACKEND_URL}/recipes?query=${encodeURIComponent(query)}&page=${page}&limit=14`);
+            const data = await response.json();
+
+            if (data.length === 0) {
+                setHasMore(false); // 더 이상 불러올 데이터가 없음을 표시
+            } else {
+                setRecipes((prev) => [...prev, ...data]); // 기존 데이터에 새 데이터를 추가
+                setPage((prev) => prev + 1); // 페이지 번호 증가
+            }
+        } catch (error) {
+            console.error('데이터 불러오기 실패:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 처음 로드 시 데이터 가져오기
+    useEffect(() => {
+        fetchRecipes();
+    }, []);
+
+    const renderRecipe = ({ item }) => (
+        <View style={styles.card}>
+            <Image
+                source={{ uri: `${BACKEND_URL}/images/${item.ID}/${item.ID}_main.jpg` }}
+                style={styles.recipeImage}
+            />
+            <Text style={styles.recipeTitle}>{item.Name || '이름 없음'}</Text>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('RecipeDetail', { id: item.ID })}
+            >
+                <Text style={styles.recipeLink}>상세 보기</Text>
+            </TouchableOpacity>
+        </View>
+    );
 
     return (
         <View style={styles.container}>
             <Text style={styles.headerText}>검색 결과</Text>
-            {filteredRecipes.length > 0 ? (
-                <ScrollView contentContainerStyle={styles.contentContainer}>
-                    {filteredRecipes.map((recipe) => (
-                        <View key={recipe.id} style={styles.card}>
-                            <Image
-                                source={{ uri: recipe.mainImage }}
-                                style={styles.recipeImage}
-                            />
-                            <Text style={styles.recipeTitle}>{recipe.Name}</Text>
-                            <TouchableOpacity
-                                onPress={() =>
-                                    navigation.navigate('RecipeDetail', {
-                                        id: recipe.id,
-                                        name: recipe.Name,
-                                        mainImage: recipe.mainImage,
-                                    })
-                                }
-                            >
-                                <Text style={styles.recipeLink}>상세 보기</Text>
-                            </TouchableOpacity>
-                        </View>
-                    ))}
-                </ScrollView>
-            ) : (
-                <View style={styles.noResultContainer}>
-                    <Text style={styles.noResultText}>검색 결과가 없습니다.</Text>
+            <FlatList
+                data={recipes}
+                renderItem={renderRecipe}
+                keyExtractor={(item, index) => item.ID || index.toString()}
+                numColumns={2} // 2열 그리드
+                contentContainerStyle={styles.contentContainer}
+                onEndReached={fetchRecipes} // 스크롤 끝에 도달 시 데이터 추가 로드
+                onEndReachedThreshold={0.5} // 트리거 임계값
+                ListFooterComponent={
+                    loading && <ActivityIndicator size="large" color="#007BFF" />
+                }
+            />
+            {!hasMore && recipes.length > 0 && (
+                <View style={styles.noMoreDataContainer}>
+                    <Text style={styles.noMoreDataText}>더 이상 데이터가 없습니다.</Text>
                 </View>
             )}
         </View>
@@ -150,7 +83,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        padding: 10,
     },
     headerText: {
         fontSize: 18,
@@ -159,22 +91,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     contentContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
+        padding: 10,
     },
     card: {
-        width: '47%',
-        marginBottom: 15,
+        flex: 1,
+        margin: 5,
         backgroundColor: '#f9f9f9',
         borderRadius: 10,
         alignItems: 'center',
         padding: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
     },
     recipeImage: {
         width: '100%',
@@ -190,15 +115,12 @@ const styles = StyleSheet.create({
     recipeLink: {
         color: '#007BFF',
         textAlign: 'center',
-        fontWeight: 'bold',
     },
-    noResultContainer: {
-        flex: 1,
-        justifyContent: 'center',
+    noMoreDataContainer: {
         alignItems: 'center',
+        marginVertical: 10,
     },
-    noResultText: {
-        fontSize: 16,
+    noMoreDataText: {
         color: '#888',
     },
 });
