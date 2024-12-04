@@ -57,7 +57,6 @@ export default function NoticeBoard({ route }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headerText}>검색 결과</Text>
             <FlatList
                 data={recipes}
                 renderItem={renderRecipe}
