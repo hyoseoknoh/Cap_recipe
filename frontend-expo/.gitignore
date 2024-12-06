@@ -37,3 +37,4 @@ yarn-error.*
 
 # 무시하지 않도록 예외 추가
 !frontend-expo/*
+

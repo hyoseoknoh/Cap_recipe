@@ -1,5 +1,3 @@
-// 
-
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
@@ -11,7 +9,7 @@ export default function NoticeBoard({ route }) {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    const BACKEND_URL = 'http://172.30.1.27:8080'; // 서버 IP
+    const BACKEND_URL = 'http://192.168.0.47:8080'; // Flask 서버 IP
     const { query = '' } = route.params || {}; // 검색어 가져오기
 
     const fetchRecipes = async () => {
