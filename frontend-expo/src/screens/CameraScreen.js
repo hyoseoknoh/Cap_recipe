@@ -240,7 +240,11 @@ import * as ImagePicker from 'expo-image-picker'; // expo-image-picker만 사용
 import { useNavigation } from '@react-navigation/native'; // useNavigation 임포트
 
 export default function CameraScreen() {
+<<<<<<< HEAD
     const SERVER_URL = 'http://172.30.1.87:5001/upload'; // Flask 서버 주소
+=======
+    const SERVER_URL = 'http://192.168.0.47:5001/upload'; // Flask 서버 주소
+>>>>>>> ef895c1a902adec75c45fbb44f9ae035947f979f
     const navigation = useNavigation(); // navigation 객체 사용
 
     const handleCameraPress = async () => {

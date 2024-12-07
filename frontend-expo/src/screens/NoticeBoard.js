@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 // import React, { useState, useEffect } from 'react';
 // import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 // import { useNavigation } from '@react-navigation/native';
@@ -123,6 +124,8 @@
 // });
 
 
+=======
+>>>>>>> ef895c1a902adec75c45fbb44f9ae035947f979f
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -132,16 +135,24 @@ export default function NoticeBoard({ route }) {
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
+<<<<<<< HEAD
     const [hasMore, setHasMore] = useState(true); // 데이터를 더 불러올 수 있는지 여부
     const BACKEND_URL = 'http://172.30.1.87:8080'; // 서버 IP
     const { ingredients = [] } = route.params || {}; // 재료 목록 가져오기
 
     // 레시피 데이터 가져오기
+=======
+    const [hasMore, setHasMore] = useState(true);
+    const BACKEND_URL = 'http://192.168.0.47:8080'; // Flask 서버 IP
+    const { query = '' } = route.params || {}; // 검색어 가져오기
+
+>>>>>>> ef895c1a902adec75c45fbb44f9ae035947f979f
     const fetchRecipes = async () => {
         if (loading || !hasMore) return; // 이미 로딩 중이거나 더 이상 데이터가 없으면 실행 중단
         setLoading(true);
 
         try {
+<<<<<<< HEAD
             const response = await fetch(`${BACKEND_URL}/search?ingredients=${encodeURIComponent(ingredients.join(','))}&page=${page}&limit=10`);
             const text = await response.text(); // 응답을 텍스트로 받아오기
             console.log("응답 내용:", text); // 응답 내용 로그 출력
@@ -164,6 +175,15 @@ export default function NoticeBoard({ route }) {
                 );
 
                 setRecipes((prev) => [...prev, ...newRecipes]); // 기존 데이터에 새 데이터를 추가
+=======
+            const response = await fetch(`${BACKEND_URL}/recipes?query=${encodeURIComponent(query)}&page=${page}&limit=14`);
+            const data = await response.json();
+
+            if (data.length === 0) {
+                setHasMore(false); // 더 이상 불러올 데이터가 없음을 표시
+            } else {
+                setRecipes((prev) => [...prev, ...data]); // 기존 데이터에 새 데이터를 추가
+>>>>>>> ef895c1a902adec75c45fbb44f9ae035947f979f
                 setPage((prev) => prev + 1); // 페이지 번호 증가
             }
         } catch (error) {
@@ -176,7 +196,11 @@ export default function NoticeBoard({ route }) {
     // 처음 로드 시 데이터 가져오기
     useEffect(() => {
         fetchRecipes();
+<<<<<<< HEAD
     }, [ingredients, page]);
+=======
+    }, []);
+>>>>>>> ef895c1a902adec75c45fbb44f9ae035947f979f
 
     const renderRecipe = ({ item }) => (
         <View style={styles.card}>
@@ -198,16 +222,26 @@ export default function NoticeBoard({ route }) {
             <FlatList
                 data={recipes}
                 renderItem={renderRecipe}
+<<<<<<< HEAD
                 keyExtractor={(item, index) => item.ID ? `${item.ID}_${index}` : `${index}`} // 이 부분을 수정
+=======
+                keyExtractor={(item, index) => item.ID || index.toString()}
+>>>>>>> ef895c1a902adec75c45fbb44f9ae035947f979f
                 numColumns={2} // 2열 그리드
                 contentContainerStyle={styles.contentContainer}
                 onEndReached={fetchRecipes} // 스크롤 끝에 도달 시 데이터 추가 로드
                 onEndReachedThreshold={0.5} // 트리거 임계값
                 ListFooterComponent={
+<<<<<<< HEAD
                     loading ? <ActivityIndicator size="large" color="#007BFF" /> : null
                 }
             />
             {/* "더 이상 데이터가 없습니다." 문구 */}
+=======
+                    loading && <ActivityIndicator size="large" color="#007BFF" />
+                }
+            />
+>>>>>>> ef895c1a902adec75c45fbb44f9ae035947f979f
             {!hasMore && recipes.length > 0 && (
                 <View style={styles.noMoreDataContainer}>
                     <Text style={styles.noMoreDataText}>더 이상 데이터가 없습니다.</Text>
@@ -222,6 +256,15 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+<<<<<<< HEAD
+=======
+    headerText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+>>>>>>> ef895c1a902adec75c45fbb44f9ae035947f979f
     contentContainer: {
         padding: 10,
     },

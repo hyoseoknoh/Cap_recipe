@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 
 flask-server/
+=======
+echo "flask-server/" >> .gitignore
+>>>>>>> ef895c1a902adec75c45fbb44f9ae035947f979f
