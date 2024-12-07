@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipes List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1><a href="/imageSearch">Image Search</a></h1>
+        <h1>Recipes List</h1>
+
+        <!-- 검색창 추가 -->
+        <form action="/search" method="GET" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="ingredients" class="form-control" placeholder="사용할 재료" aria-label="Search ingredients">
+                <input type="text" name="not_ingredients" class="form-control" placeholder="제외할 재료" aria-label="Search ingredients">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">검색</button>
+                </div>
+            </div>
+            <p>입력 예시 : 감자, 당근</p>
+        </form>
+
+        <h1>Season Recipes</h1>
+        <ul class="list-group">
+            <% randomrecipes.forEach(function(recipe) { %>
+                <li class="list-group-item">
+                    <h5><a href="/recipe/<%= recipe.ID %>"><%= recipe.Name %></a></h5>
+                    <p><%= recipe.Recipe.substring(0, 100) %>...</p> <!-- 설명 일부만 표시 -->
+                </li>
+            <% }); %>
+        </ul>
+        <!-- 레시피 리스트 -->
+        <h1>Recipes</h1>
+        <ul class="list-group">
+            <% recipes.forEach(function(recipe) { %>
+                <li class="list-group-item">
+                    <h5><a href="/recipe/<%= recipe.ID %>"><%= recipe.Name %></a></h5>
+                    <p><%= recipe.Recipe.substring(0, 100) %>...</p> <!-- 설명 일부만 표시 -->
+                </li>
+            <% }); %>
+        </ul>
+
+        <!-- 페이지네이션 -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item"><a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a></li>
+                <% } %>
+
+                <% for (let i = Math.max(1, currentPage - 5); i <= Math.min(totalPages, currentPage + 5); i++) { %>
+                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item"><a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

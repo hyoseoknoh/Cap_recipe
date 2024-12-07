@@ -1,0 +1,2 @@
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+flask-server/yolov5/* filter=lfs diff=lfs merge=lfs -text
