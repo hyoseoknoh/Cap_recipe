@@ -11,7 +11,7 @@ export default function FoodieaApp() {
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const BACKEND_URL = 'http://172.30.1.87:8080'; // Flask 서버 IP
+    const BACKEND_URL = 'http://172.30.1.100:8080'; // Flask 서버 IP
 
     // 검색 핸들러 추가
     // 검색 핸들러 수정 (재료 기반 검색)
