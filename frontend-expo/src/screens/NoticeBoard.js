@@ -9,7 +9,7 @@ export default function NoticeBoard({ route }) {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true); // 데이터를 더 불러올 수 있는지 여부
     const [noResults, setNoResults] = useState(false); // 검색된 레시피가 없는지 여부
-    const BACKEND_URL = 'http://172.30.1.100:8080'; // 서버 IP
+    const BACKEND_URL = 'http://172.16.1.23:8080'; // 서버 IP
     const { ingredients = [] } = route.params || {}; // 재료 목록 가져오기
 
     // 레시피 데이터 가져오기

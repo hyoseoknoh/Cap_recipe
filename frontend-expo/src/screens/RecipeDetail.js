@@ -6,7 +6,7 @@ export default function RecipeDetail({ route }) {
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const BACKEND_URL = 'http://172.30.1.100:8080'; // Flask 서버 IP
+    const BACKEND_URL = 'http://172.16.1.23:8080'; // Flask 서버 IP
 
     useEffect(() => {
         const fetchRecipeDetail = async () => {
